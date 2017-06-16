@@ -32,3 +32,12 @@ You can configure the color patterns and default font-size in the `SimpleClock.e
 Each color pattern is formed by two keys: `FontColorN` and `BackgroundColorN`, where `N`is the number of the pattern. You can add up to 9 differents patterns. The color is defined with the RGB values separeted in commas.
 
 
+Example images:
+
+[![Image 1](https://github.com/zegmonteiro/SimpleClock/raw/master/SimpleClock/img/01.png)](#features)
+
+[![Image 1](https://github.com/zegmonteiro/SimpleClock/raw/master/SimpleClock/img/02.png)](#features)
+
+[![Image 1](https://github.com/zegmonteiro/SimpleClock/raw/master/SimpleClock/img/03.png)](#features)
+
+[![Image 1](https://github.com/zegmonteiro/SimpleClock/raw/master/SimpleClock/img/04.png)](#features)
