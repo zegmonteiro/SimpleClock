@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Clock));
             this.lbl_clock = new System.Windows.Forms.Label();
             this.lbl_size = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -66,6 +67,7 @@
             this.Controls.Add(this.lbl_size);
             this.Controls.Add(this.lbl_clock);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Clock";
             this.Text = "Form1";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

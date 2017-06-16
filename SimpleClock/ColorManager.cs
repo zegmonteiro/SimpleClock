@@ -27,6 +27,16 @@ namespace SimpleClock
 
         public ColorSchema GetColorSchema(int idx)
         {
+            if (idx == -1)
+            {
+                return new ColorSchema() { Text = Color.White, Background = Color.Black };
+            }
+
+            if (idx == 99)
+            {
+                return new ColorSchema() { Text = Color.Red, Background = Color.Black };
+            }
+
             if (Schemas.ContainsKey(idx))
             {
                 return Schemas[idx];

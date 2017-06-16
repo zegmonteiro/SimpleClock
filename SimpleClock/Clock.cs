@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,27 @@ namespace SimpleClock
 
     public partial class Clock : Form
     {
-        static Timer updateClock = new Timer();
+
+#region Blinking
+
+        static Timer blinkingClock = new Timer();
+
+        private Stopwatch sw  = new Stopwatch();
+
+        private short CycleTime_ms = 1000;
+
+        private bool Blinking = false;
+
+        private bool BkClr = false;
+
+#endregion
+
+        public int? OldSchema { get; set; }
 
         public int CurrSchema { get; set; }
+
+        static Timer updateClock = new Timer();
+
 
         public Mode CurrentMode = Mode.Clock;
 
@@ -39,7 +58,6 @@ namespace SimpleClock
             {
                 return TimeToCount.Subtract(ElapsedTime);
             }
-            set { remainingTime = value; }
         }
 
         public TimeSpan ElapsedTime
@@ -82,8 +100,32 @@ namespace SimpleClock
             updateClock.Tick += updateClock_Tick;
             updateClock.Interval = 500; //updates the time every half second    
             updateClock.Start();
+
+            sw.Start();
+            blinkingClock.Tick += BlinkingClock_TickAsync;
+            blinkingClock.Interval = 5;
+            blinkingClock.Start();
+
+            Blinking = false;
         }
 
+        private async void BlinkingClock_TickAsync(object sender, EventArgs e)
+        {
+            if (Blinking)
+            {
+
+                var c1 = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
+                var c2 = Color.Black;
+                await Task.Delay(5);
+                var n = sw.ElapsedMilliseconds % CycleTime_ms;
+                var per = (double)Math.Abs(n - (short)Math.Round(CycleTime_ms * 0.5)) / (short)Math.Round(CycleTime_ms * 0.5);
+                var red = (short)Math.Round((c2.R - c1.R) * per) + c1.R;
+                var grn = (short)Math.Round((c2.G - c1.G) * per) + c1.G;
+                var blw = (short)Math.Round((c2.B - c1.B) * per) + c1.B;
+                var clr = Color.FromArgb(red, grn, blw);
+                if (BkClr) lbl_clock.BackColor = clr; else lbl_clock.ForeColor = clr;
+            }
+        }
 
         void updateClock_Tick(object sender, EventArgs e)
         {
@@ -92,9 +134,13 @@ namespace SimpleClock
 
         void UpdateTextLabels()
         {
-            lbl_clock.ForeColor = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
-            this.BackColor = ColorManager.Instance.GetColorSchema(CurrSchema).Background;
             lbl_clock.Font = new Font(lbl_clock.Font.FontFamily, FontSize);
+
+            if (!Blinking)
+            {
+                lbl_clock.ForeColor = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
+                this.BackColor = ColorManager.Instance.GetColorSchema(CurrSchema).Background;
+            }
 
             if (CurrentMode.Equals(Mode.Clock))
             {
@@ -102,7 +148,30 @@ namespace SimpleClock
             }
             else if(CurrentMode.Equals(Mode.CountDown))
             {
-                lbl_clock.Text = $"{RemainingTime.Minutes.ToString("00")}:{RemainingTime.Seconds.ToString("00")}";
+                if (RemainingTime.TotalSeconds < 30)
+                {
+                    Blinking = true;
+                    if (RemainingTime.TotalSeconds < 10)
+                    {
+                        if (OldSchema == null)
+                        {
+                            OldSchema = CurrSchema;
+                        }
+                        CurrSchema = 99;
+                    }
+                }
+
+                if (ElapsedTime < TimeToCount)
+                {
+                    lbl_clock.Text = $"{RemainingTime.Minutes.ToString("00")}:{RemainingTime.Seconds.ToString("00")}";
+                }
+                else
+                {
+                    lbl_clock.Text = "00:00";
+                    Blinking = false;
+                    CurrSchema = OldSchema ?? -1;
+                }
+
             }
 
         }
@@ -111,10 +180,12 @@ namespace SimpleClock
         {
             using (var form = new CountDownConfig())
             {
+
+                form.StartPosition = FormStartPosition.CenterParent;
+
                 var result = form.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    //SecondsToCount = form.Minutes * 60;
                     TimeToCount = TimeSpan.FromSeconds(form.Minutes * 60);
                     StartTime = DateTime.Now;
                     CurrentMode = Mode.CountDown;
@@ -158,6 +229,10 @@ namespace SimpleClock
                     }
                     break;
 
+                case Keys.B:
+                    Blinking = !Blinking;
+                    break;
+
                 case Keys.R:
                     CurrentMode = Mode.Clock;
                     break;
@@ -182,5 +257,24 @@ namespace SimpleClock
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+        //private async void SoftBlink(Control ctrl, short CycleTime_ms, bool BkClr)
+        //{
+        //    var sw = new Stopwatch(); sw.Start();
+        //    short halfCycle = (short)Math.Round(CycleTime_ms * 0.5);
+        //    while (Blinking)
+        //    {
+        //        var c1 = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
+        //        var c2 = Color.Black;
+        //        await Task.Delay(5);
+        //        var n = sw.ElapsedMilliseconds % CycleTime_ms;
+        //        var per = (double)Math.Abs(n - halfCycle) / halfCycle;
+        //        var red = (short)Math.Round((c2.R - c1.R) * per) + c1.R;
+        //        var grn = (short)Math.Round((c2.G - c1.G) * per) + c1.G;
+        //        var blw = (short)Math.Round((c2.B - c1.B) * per) + c1.B;
+        //        var clr = Color.FromArgb(red, grn, blw);
+        //        if (BkClr) ctrl.BackColor = clr; else ctrl.ForeColor = clr;
+        //    }
+        //}
     }
 }
