@@ -55,10 +55,19 @@
     </Compile>
     <Compile Include="ColorManager.cs" />
     <Compile Include="ColorSchema.cs" />
+    <Compile Include="CountDownConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CountDownConfig.Designer.cs">
+      <DependentUpon>CountDownConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Clock.resx">
       <DependentUpon>Clock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CountDownConfig.resx">
+      <DependentUpon>CountDownConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
