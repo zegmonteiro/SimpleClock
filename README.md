@@ -9,6 +9,9 @@ Bellow is the list of keys and its functionallities:
 |Key|Function|
 |:---:|---|
 |ESC |Exits the program|
+|C |Goes to the CountDown Mode|
+|B |Start/Stop the Blinking|
+|R |Goes to the Clock Mode|
 |+ |Increases the font size|
 |- |Decreases the font size|
 |0 (zero)|Resets the font size|
