@@ -2,6 +2,7 @@
 This is a full-screen desktop clock with basic functions.
 
 Bellow is the list of keys and its functionallities:
+
 |Key|Function|
 |:---:|---|
 |ESC |Exits the program|
