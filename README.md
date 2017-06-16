@@ -1,6 +1,8 @@
 # SimpleClock
 This is a full-screen desktop clock with basic functions.
 
+*Read this in other languages: [English](README.md), [Portugês](README.pt.md).*
+
 Bellow is the list of keys and its functionallities:
 
 
