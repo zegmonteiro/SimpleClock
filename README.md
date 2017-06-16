@@ -13,12 +13,6 @@ Bellow is the list of keys and its functionallities:
 |1-9|Changes the color pattern|
 
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-
-
 You can configure the color patterns and default font-size in the `SimpleClock.exe.config` file, as shown bellow:
 
 ```
