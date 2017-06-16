@@ -3,6 +3,7 @@ This is a full-screen desktop clock with basic functions.
 
 Bellow is the list of keys and its functionallities:
 
+
 |Key|Function|
 |:---:|---|
 |ESC |Exits the program|
@@ -10,6 +11,13 @@ Bellow is the list of keys and its functionallities:
 |- |Decreases the font size|
 |0 (zero)|Resets the font size|
 |1-9|Changes the color pattern|
+
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 
 You can configure the color patterns and default font-size in the `SimpleClock.exe.config` file, as shown bellow:
 
