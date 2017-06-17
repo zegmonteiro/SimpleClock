@@ -283,7 +283,6 @@
             this.tbx_text.Size = new System.Drawing.Size(800, 185);
             this.tbx_text.TabIndex = 1000;
             this.tbx_text.TabStop = false;
-            this.tbx_text.Text = "A reunião iniciará às 19h";
             this.tbx_text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Clock
