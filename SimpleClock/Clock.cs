@@ -94,13 +94,37 @@ namespace SimpleClock
 
         private int GetInitialFontSize()
         {
-            int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["ClockFontSize"], out int i);
-            return (i > 0) ? i : 200;
+            if (ConfigReader.ReadKey("AutoSizeClockFont") == "true")
+            {
+                using (Graphics g = CreateGraphics())
+                {
+                    SizeF size = new SizeF() { Width = 0 }; 
+                    _fontSize = 0;
+                    var increment = 1;
+
+                    do
+                    {
+                        _fontSize += increment;
+                        lbl_clock.Font = new Font(lbl_clock.Font.FontFamily, _fontSize);
+                        size = g.MeasureString(lbl_clock.Text, lbl_clock.Font);
+                    } while (size.Width <= 0.95 * Width);
+
+
+                    _fontSize -= increment;
+
+                    return _fontSize;
+                }
+            }
+            else
+            {
+                int.TryParse(ConfigReader.ReadKey("ClockFontSize"), out int i);
+                return (i > 0) ? i : 200;
+            }
         }
 
         private int GetTextSize()
         {
-            int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["TextFontSize"], out int i);
+            int.TryParse(ConfigReader.ReadKey("TextFontSize"), out int i);
             return (i > 0) ? i : 35;
         }
 
@@ -131,7 +155,7 @@ namespace SimpleClock
                         SizeF size = g.MeasureString(lbl_clock.Text, lbl_clock.Font);
                         //Debug.WriteLine($"X: {size.Width}  Form: {this.Width}");
 
-                        if (size.Width > 0.95*this.Width)
+                        if (size.Width > 0.95* Width)
                         {
                             _fontSize = oldValue;
                             UpdateTextLabels();
@@ -145,12 +169,33 @@ namespace SimpleClock
             }
         }
 
+        //private void CalculateClockFontSize()
+        //{
+        //    using (Graphics g = CreateGraphics())
+        //    {
+        //        SizeF size = new SizeF() { Width = 0 }; // = g.MeasureString(lbl_clock.Text, lbl_clock.Font);
+
+        //        while (size.Width <= 0.95 * Width)
+        //        {
+        //            FontSize += 10;
+
+        //            size = g.MeasureString(lbl_clock.Text, lbl_clock.Font);
+        //        }
+
+        //    }
+        //}
+
         public Clock()
         {
             CurrentSchema = -1;
             InitializeComponent();
 
-            tbx_text.Font = new Font(tbx_text.Font.FontFamily, GetTextSize()); 
+            tbx_text.Font = new Font(tbx_text.Font.FontFamily, GetTextSize());
+
+            //if (System.Configuration.ConfigurationSettings.AppSettings["AutoSizeClockFont"] == "true")
+            //{
+            //    CalculateClockFontSize();
+            //}
 
             lbl_size.Visible = false;
             UpdateTextLabels();
@@ -196,7 +241,7 @@ namespace SimpleClock
             if (!Blinking)
             {
                 lbl_clock.ForeColor = ColorManager.Instance.GetColorSchema(CurrentSchema).Text;
-                this.BackColor = ColorManager.Instance.GetColorSchema(CurrentSchema).Background;
+                BackColor = ColorManager.Instance.GetColorSchema(CurrentSchema).Background;
             }
 
             if (CurrentMode.Equals(Mode.Clock))
@@ -224,6 +269,7 @@ namespace SimpleClock
                 }
                 else
                 {
+                    CurrentMode = Mode.Clock;
                     lbl_clock.Text = "00:00";
                     Blinking = false;
                     CurrentSchema = OldSchema ?? -1;
@@ -280,7 +326,7 @@ namespace SimpleClock
             switch (keyData)
             {
                 case Keys.Escape:
-                    this.Close();
+                    Close();
                     return true;
                 case Keys.Oemplus:
                     FontSize += 2;
@@ -316,12 +362,6 @@ namespace SimpleClock
                     break;
             }
 
-            //if (keyData == Keys.Oemplus || keyData == Keys.OemMinus || keyData == Keys.D0)
-            //{
-            //    lbl_size.Text = FontSize.ToString();
-            //    lbl_size.Visible = true;
-            //    HideSizeLabel();
-            //}
 
             if (keyData >= Keys.D1 && keyData <= Keys.D9)
             {
@@ -334,29 +374,11 @@ namespace SimpleClock
         }
 
 
-        //private void ChangeFontSize(bool direction = true, int increment = 2)
-        //{
-        //    if (direction)
-        //    {
-        //        FontSize += increment;
-        //    }
-        //    else
-        //    {
-        //        FontSize -= increment;
-        //    }
-
-        //}
-
         private void ShowLabelFontSize()
         {
             lbl_size.Text = FontSize.ToString();
             lbl_size.Visible = true;
             HideSizeLabel();
-        }
-
-        private void lbl_clock_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void pbx_clock_Click(object sender, EventArgs e)
@@ -405,19 +427,16 @@ namespace SimpleClock
         private void pbx_sizeUp_Click(object sender, EventArgs e)
         {
             FontSize += 10;
-            //UpdateTextLabels();
         }
 
         private void pbx_sizeDown_Click(object sender, EventArgs e)
         {
             FontSize -= 10;
-            //UpdateTextLabels();
         }
 
         private void pbx_sizeReset_Click(object sender, EventArgs e)
         {
             FontSize = GetInitialFontSize();
-            //UpdateTextLabels();
         }
 
         private void pbx_prevSchema_Click(object sender, EventArgs e)
@@ -437,7 +456,7 @@ namespace SimpleClock
             }
             else
             {
-                CurrentSchema = 1;
+                CurrentSchema = 2;
             }
         }
 
@@ -481,5 +500,6 @@ namespace SimpleClock
         {
             TextClick();
         }
+
     }
 }

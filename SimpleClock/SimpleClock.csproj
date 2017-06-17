@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="ColorManager.cs" />
     <Compile Include="ColorSchema.cs" />
+    <Compile Include="ConfigReader.cs" />
     <Compile Include="CountDownConfig.cs">
       <SubType>Form</SubType>
     </Compile>

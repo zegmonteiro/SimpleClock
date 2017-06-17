@@ -63,7 +63,7 @@
             // lbl_clock
             // 
             this.lbl_clock.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_clock.Font = new System.Drawing.Font("Myriad Pro", 200F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_clock.Font = new System.Drawing.Font("Myriad Pro", 50F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_clock.ForeColor = System.Drawing.Color.White;
             this.lbl_clock.Location = new System.Drawing.Point(0, 0);
             this.lbl_clock.Name = "lbl_clock";
@@ -71,7 +71,6 @@
             this.lbl_clock.TabIndex = 0;
             this.lbl_clock.Text = "99:99";
             this.lbl_clock.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lbl_clock.Click += new System.EventHandler(this.lbl_clock_Click);
             this.lbl_clock.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lbl_clock_MouseMove);
             // 
             // lbl_size
