@@ -41,6 +41,7 @@ namespace SimpleClock
 
         static Timer updateClock = new Timer();
 
+        Rectangle rect;
 
         public Mode CurrentMode = Mode.Clock;
 
@@ -88,13 +89,25 @@ namespace SimpleClock
 
                 return fontSize;
             }
-            set { fontSize = value; }
+            set
+            {
+                if (value > 0)
+                {
+                    fontSize = value;
+                    UpdateTextLabels();
+                    ShowLabelFontSize();
+                }
+            }
         }
 
         public Clock()
         {
             CurrSchema = -1;
             InitializeComponent();
+
+            rect = pnl_controls.DisplayRectangle;
+
+
             lbl_size.Visible = false;
             UpdateTextLabels();
             updateClock.Tick += updateClock_Tick;
@@ -204,6 +217,20 @@ namespace SimpleClock
             lbl_size.Visible = false;
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            Debug.WriteLine($"Wheel: {e.Delta}");
+            if (e.Delta > 0)
+            {
+                FontSize += 10;
+            }
+            else
+            {
+                FontSize -= 10;
+            }
+            base.OnMouseWheel(e);
+        }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             switch (keyData)
@@ -241,12 +268,12 @@ namespace SimpleClock
                     break;
             }
 
-            if (keyData == Keys.Oemplus || keyData == Keys.OemMinus || keyData == Keys.D0)
-            {
-                lbl_size.Text = FontSize.ToString();
-                lbl_size.Visible = true;
-                HideSizeLabel();
-            }
+            //if (keyData == Keys.Oemplus || keyData == Keys.OemMinus || keyData == Keys.D0)
+            //{
+            //    lbl_size.Text = FontSize.ToString();
+            //    lbl_size.Visible = true;
+            //    HideSizeLabel();
+            //}
 
             if (keyData >= Keys.D1 && keyData <= Keys.D9)
             {
@@ -257,6 +284,94 @@ namespace SimpleClock
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+
+        //private void ChangeFontSize(bool direction = true, int increment = 2)
+        //{
+        //    if (direction)
+        //    {
+        //        FontSize += increment;
+        //    }
+        //    else
+        //    {
+        //        FontSize -= increment;
+        //    }
+
+        //}
+
+        private void ShowLabelFontSize()
+        {
+            lbl_size.Text = FontSize.ToString();
+            lbl_size.Visible = true;
+            HideSizeLabel();
+        }
+
+        private void lbl_clock_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pbx_clock_Click(object sender, EventArgs e)
+        {
+            CurrentMode = Mode.Clock;
+            UpdateTextLabels();
+        }
+
+        private void pbx_countdown_Click(object sender, EventArgs e)
+        {
+            if (CurrentMode != Mode.CountDown)
+            {
+                StartCountDown();
+            }
+            UpdateTextLabels();
+        }
+
+        private void pnl_controls_MouseLeave(object sender, EventArgs e)
+        {
+            pnl_controls.Visible = false;
+        }
+
+
+        public bool isRectangelContainPoint(RectangleF rec, PointF pt)
+        {
+            if (pt.X >= rec.Left && pt.X <= rec.Right && pt.Y <= rec.Bottom && pt.Y >= rec.Top)
+                return true;
+            else
+                return false;
+        }
+
+        private void lbl_clock_MouseMove(object sender, MouseEventArgs e)
+        {
+            //System.Diagnostics.Debug.WriteLine($"X: {Cursor.Position.X}  Y: {Cursor.Position.Y}");
+            if (isRectangelContainPoint(pnl_controls.Bounds, Cursor.Position))
+            {
+                pnl_controls.Visible = true;
+            }
+            else
+            {
+                pnl_controls.Visible = false;
+            }
+
+        }
+
+        private void pbx_sizeUp_Click(object sender, EventArgs e)
+        {
+            FontSize += 10;
+            //UpdateTextLabels();
+        }
+
+        private void pbx_sizeDown_Click(object sender, EventArgs e)
+        {
+            FontSize -= 10;
+            //UpdateTextLabels();
+        }
+
+        private void pbx_sizeReset_Click(object sender, EventArgs e)
+        {
+            FontSize = GetInitialFontSize();
+            //UpdateTextLabels();
+        }
+
 
         //private async void SoftBlink(Control ctrl, short CycleTime_ms, bool BkClr)
         //{

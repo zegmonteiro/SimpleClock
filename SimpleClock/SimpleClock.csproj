@@ -95,6 +95,12 @@
     <Content Include="img\02.png" />
     <Content Include="img\03.png" />
     <Content Include="img\04.png" />
+    <Content Include="img\clock-with-white-face.png" />
+    <Content Include="img\clock.ico" />
+    <Content Include="img\refresh.png" />
+    <Content Include="img\round-delete-button.png" />
+    <Content Include="img\rounded-add-button.png" />
+    <Content Include="img\set-timer-button.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
