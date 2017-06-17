@@ -76,10 +76,11 @@
             // 
             // lbl_size
             // 
+            this.lbl_size.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbl_size.AutoSize = true;
             this.lbl_size.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_size.ForeColor = System.Drawing.Color.White;
-            this.lbl_size.Location = new System.Drawing.Point(14, 188);
+            this.lbl_size.Location = new System.Drawing.Point(2, 466);
             this.lbl_size.Name = "lbl_size";
             this.lbl_size.Size = new System.Drawing.Size(58, 31);
             this.lbl_size.TabIndex = 1;
