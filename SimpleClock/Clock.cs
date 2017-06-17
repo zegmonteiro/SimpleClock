@@ -37,21 +37,41 @@ namespace SimpleClock
 
         public int? OldSchema { get; set; }
 
-        public int CurrSchema { get; set; }
+
+        private int _currentSchema = -1;
+
+        public int CurrentSchema
+        {
+            get { return _currentSchema; }
+            set
+            {
+                if (value != _currentSchema)
+                {
+                    _currentSchema = value;
+                    UpdateTextLabels();
+                }
+            }
+        }
+
+
+
+        //private int _currentSchema = -1;
+
+
+        //public int CurrentSchema { get; set; }
 
         static Timer updateClock = new Timer();
 
-        Rectangle rect;
+        //Rectangle rect;
 
         public Mode CurrentMode = Mode.Clock;
 
-        private int fontSize = -1;
 
         //private int SecondsToCount { get; set; }
 
         private TimeSpan TimeToCount { get; set; }
 
-        private TimeSpan remainingTime;
+        //private TimeSpan remainingTime;
 
         public TimeSpan RemainingTime
         {
@@ -74,26 +94,34 @@ namespace SimpleClock
 
         private int GetInitialFontSize()
         {
-            int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["FontSize"], out int i);
+            int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["ClockFontSize"], out int i);
             return (i > 0) ? i : 200;
         }
 
+        private int GetTextSize()
+        {
+            int.TryParse(System.Configuration.ConfigurationSettings.AppSettings["TextFontSize"], out int i);
+            return (i > 0) ? i : 35;
+        }
+
+
+        private int _fontSize = -1;
 
         public int FontSize
         {
             get {
-                if (fontSize < 0)
+                if (_fontSize < 0)
                 {
-                    fontSize = GetInitialFontSize();
+                    _fontSize = GetInitialFontSize();
                 }
 
-                return fontSize;
+                return _fontSize;
             }
             set
             {
                 if (value > 0)
                 {
-                    fontSize = value;
+                    _fontSize = value;
                     UpdateTextLabels();
                     ShowLabelFontSize();
                 }
@@ -102,11 +130,10 @@ namespace SimpleClock
 
         public Clock()
         {
-            CurrSchema = -1;
+            CurrentSchema = -1;
             InitializeComponent();
 
-            rect = pnl_controls.DisplayRectangle;
-
+            tbx_text.Font = new Font(tbx_text.Font.FontFamily, GetTextSize()); 
 
             lbl_size.Visible = false;
             UpdateTextLabels();
@@ -127,7 +154,7 @@ namespace SimpleClock
             if (Blinking)
             {
 
-                var c1 = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
+                var c1 = ColorManager.Instance.GetColorSchema(CurrentSchema).Text;
                 var c2 = Color.Black;
                 await Task.Delay(5);
                 var n = sw.ElapsedMilliseconds % CycleTime_ms;
@@ -151,8 +178,8 @@ namespace SimpleClock
 
             if (!Blinking)
             {
-                lbl_clock.ForeColor = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
-                this.BackColor = ColorManager.Instance.GetColorSchema(CurrSchema).Background;
+                lbl_clock.ForeColor = ColorManager.Instance.GetColorSchema(CurrentSchema).Text;
+                this.BackColor = ColorManager.Instance.GetColorSchema(CurrentSchema).Background;
             }
 
             if (CurrentMode.Equals(Mode.Clock))
@@ -168,9 +195,9 @@ namespace SimpleClock
                     {
                         if (OldSchema == null)
                         {
-                            OldSchema = CurrSchema;
+                            OldSchema = CurrentSchema;
                         }
-                        CurrSchema = 99;
+                        CurrentSchema = 99;
                     }
                 }
 
@@ -182,7 +209,7 @@ namespace SimpleClock
                 {
                     lbl_clock.Text = "00:00";
                     Blinking = false;
-                    CurrSchema = OldSchema ?? -1;
+                    CurrentSchema = OldSchema ?? -1;
                 }
 
             }
@@ -264,6 +291,10 @@ namespace SimpleClock
                     CurrentMode = Mode.Clock;
                     break;
 
+                case Keys.T:
+                    TextClick();
+                    break;
+
                 default:
                     break;
             }
@@ -277,7 +308,7 @@ namespace SimpleClock
 
             if (keyData >= Keys.D1 && keyData <= Keys.D9)
             {
-                CurrSchema = int.Parse(keyData.ToString().Replace("D", ""));
+                CurrentSchema = int.Parse(keyData.ToString().Replace("D", ""));
             }
 
             UpdateTextLabels();
@@ -351,7 +382,7 @@ namespace SimpleClock
             {
                 pnl_controls.Visible = false;
             }
-
+            
         }
 
         private void pbx_sizeUp_Click(object sender, EventArgs e)
@@ -372,24 +403,66 @@ namespace SimpleClock
             //UpdateTextLabels();
         }
 
+        private void pbx_prevSchema_Click(object sender, EventArgs e)
+        {
+            if (CurrentSchema > 1)
+            {
+                CurrentSchema--;
+            }
+            
+        }
 
-        //private async void SoftBlink(Control ctrl, short CycleTime_ms, bool BkClr)
-        //{
-        //    var sw = new Stopwatch(); sw.Start();
-        //    short halfCycle = (short)Math.Round(CycleTime_ms * 0.5);
-        //    while (Blinking)
-        //    {
-        //        var c1 = ColorManager.Instance.GetColorSchema(CurrSchema).Text;
-        //        var c2 = Color.Black;
-        //        await Task.Delay(5);
-        //        var n = sw.ElapsedMilliseconds % CycleTime_ms;
-        //        var per = (double)Math.Abs(n - halfCycle) / halfCycle;
-        //        var red = (short)Math.Round((c2.R - c1.R) * per) + c1.R;
-        //        var grn = (short)Math.Round((c2.G - c1.G) * per) + c1.G;
-        //        var blw = (short)Math.Round((c2.B - c1.B) * per) + c1.B;
-        //        var clr = Color.FromArgb(red, grn, blw);
-        //        if (BkClr) ctrl.BackColor = clr; else ctrl.ForeColor = clr;
-        //    }
-        //}
+        private void pbx_nextSchema_Click(object sender, EventArgs e)
+        {
+            if (CurrentSchema < 9 && CurrentSchema > 0)
+            {
+                CurrentSchema++;
+            }
+            else
+            {
+                CurrentSchema = 1;
+            }
+        }
+
+        private void pbx_resetSchema_Click(object sender, EventArgs e)
+        {
+            CurrentSchema = -1;
+        }
+
+        private void pbx_blink_Click(object sender, EventArgs e)
+        {
+            Blinking = !Blinking;
+        }
+
+        private void TextClick()
+        {
+            if (pnl_text.Visible)
+            {
+                pnl_text.Visible = false;
+            }
+            else
+            {
+                using (var form = new TextConfig())
+                {
+                    form.StartPosition = FormStartPosition.CenterParent;
+
+                    var result = form.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        tbx_text.Text = form.TextEntered;
+                        pnl_text.Visible = true;
+                    }
+                    else
+                    {
+                        pnl_text.Visible = false;
+                    }
+                }
+            }
+        }
+
+        private void pbx_msg_Click(object sender, EventArgs e)
+        {
+            TextClick();
+        }
     }
 }

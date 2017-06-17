@@ -63,6 +63,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextConfig.Designer.cs">
+      <DependentUpon>TextConfig.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Clock.resx">
       <DependentUpon>Clock.cs</DependentUpon>
     </EmbeddedResource>
@@ -79,6 +85,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TextConfig.resx">
+      <DependentUpon>TextConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -91,13 +100,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="img\01.png" />
-    <Content Include="img\02.png" />
-    <Content Include="img\03.png" />
-    <Content Include="img\04.png" />
     <Content Include="img\clock-with-white-face.png" />
     <Content Include="img\clock.ico" />
+    <Content Include="img\ColorReset.png" />
+    <Content Include="img\decrease.png" />
+    <Content Include="img\Increase.png" />
+    <Content Include="img\nextColor.png" />
+    <Content Include="img\prevColor.png" />
     <Content Include="img\refresh.png" />
+    <Content Include="img\reset.png" />
     <Content Include="img\round-delete-button.png" />
     <Content Include="img\rounded-add-button.png" />
     <Content Include="img\set-timer-button.png" />
