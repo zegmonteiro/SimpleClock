@@ -119,10 +119,27 @@ namespace SimpleClock
             }
             set
             {
+                var oldValue = _fontSize;
                 if (value > 0)
                 {
                     _fontSize = value;
                     UpdateTextLabels();
+
+                    using (Graphics g = CreateGraphics())
+                    {
+
+                        SizeF size = g.MeasureString(lbl_clock.Text, lbl_clock.Font);
+                        //Debug.WriteLine($"X: {size.Width}  Form: {this.Width}");
+
+                        if (size.Width > 0.95*this.Width)
+                        {
+                            _fontSize = oldValue;
+                            UpdateTextLabels();
+                        }
+                    }
+
+
+
                     ShowLabelFontSize();
                 }
             }
